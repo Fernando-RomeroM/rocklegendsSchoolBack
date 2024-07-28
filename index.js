@@ -1,19 +1,22 @@
-// server.js
-
 const express = require('express');
-const bodyParser = require('body-parser');
+const path = require('path');
+const alumnosRoutes = require('./routes/alumnosRoutes');
 require('dotenv').config();
 
-const alumnosRoutes = require('./routes/alumnosRoutes');
-const userRoutes = require('./routes/userRoutes'); // Importar las rutas de usuario
-
 const app = express();
-const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
-app.use('/api/properties', alumnosRoutes);
-app.use('/api/user', userRoutes); // Usar las rutas de usuario
+// Middleware para rutas de alumnos
+app.use('/api/alumnos', alumnosRoutes);
 
-app.listen(port, () => {
-    console.log(`API listening on http://localhost:${port}`);
+// Middleware para servir archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, '../rocklegendsSchoolFront')));
+
+// Ruta para manejar todas las demás solicitudes y servir el archivo index.html del frontend
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../rocklegendsSchoolFront', 'index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
 });

@@ -1,5 +1,5 @@
-const { Client } = require('pg')
-require('dotenv').config()
+const { Client } = require('pg');
+require('dotenv').config();
 
 const client = new Client({
     user: process.env.DB_USER,
@@ -7,15 +7,17 @@ const client = new Client({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: 5432,
-    ssl: true
-})
+    ssl: {
+        rejectUnauthorized: false,
+    },
+});
 
 client.connect(err => {
     if (err) {
-        console.error('Connection error', err.stack)
-    }   else {
-        console.log('Connected to database')
+        console.error('Connection error', err.stack);
+    } else {
+        console.log('Connected to database');
     }
-})
+});
 
 module.exports = client;
