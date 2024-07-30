@@ -15,21 +15,27 @@ exports.getUser = async (req, res) => {
     }
 };
 
-exports.loginUser = async (req, res) => { // Corrección en la definición de la función
+exports.loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
-        const result = await client.query('SELECT * FROM users WHERE email = $1', [email]); // Asegúrate que la tabla se llama 'users' y no 'user'
+        const result = await client.query('SELECT * FROM users WHERE username = $1', [username]); // Corregido de 'email' a 'username'
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'No queremos Posers en nuestra escuela' });
         }
         const user = result.rows[0];
-        const validPassword = await bcrypt.compare(password, user.password); // Comprobar la contraseña
+        const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(404).json({ error: 'No queremos Posers en nuestra escuela' });
         }
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET || "screto", { expiresIn: '1h' }); // Usa una variable de entorno para la clave secreta
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Usa una variable de entorno para la clave secreta
         res.json({ token, userId: user.id });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+// const validPassword = await bcrypt.compare(password, user.password); // Comprobar la contraseña
+        // if (!validPassword) {
+        //     return res.status(404).json({ error: 'No queremos Posers en nuestra escuela' });
+        // }
