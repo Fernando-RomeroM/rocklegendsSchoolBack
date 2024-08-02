@@ -14,8 +14,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/alumnos', alumnoRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/calificaciones', calificacionRoutes);
+app.use('/api/user', userRoutes);  // Verifica que esta ruta sea correcta
+app.use('/api/calificaciones', calificacionRoutes);  // Verifica que esta ruta sea correcta
 
 app.use(express.static(path.join(__dirname, '../rocklegendsSchoolFront')));
 
