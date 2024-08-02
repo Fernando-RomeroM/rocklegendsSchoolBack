@@ -1,5 +1,5 @@
 const client = require('../db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.getUser = async (req, res) => {
@@ -10,11 +10,11 @@ exports.getUser = async (req, res) => {
             return res.status(404).json({ error: 'No queremos Posers en nuestra escuela' });
         }
         let user = result.rows[0];
-    delete user.password
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        delete user.password;
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 exports.loginUser = async (req, res) => {
@@ -25,14 +25,13 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({ error: 'No queremos Posers en nuestra escuela' });
         }
         const user = result.rows[0];
-        // const validPassword = await bcrypt.compare(password, user.password);
-        // if (!validPassword) {
-        //     return res.status(400).json({ error: 'No queremos Posers en nuestra escuela' });
-        // }
-        const token = jwt.sign({ id: user.id, email: user.email }, "screto", { expiresIn: '1h' });
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(400).json({ error: 'No queremos Posers en nuestra escuela' });
+        }
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token, userId: user.id });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
-

@@ -1,24 +1,24 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 require('dotenv').config();
 
 const alumnoRoutes = require('./routes/alumnoRoutes');
 const userRoutes = require('./routes/userRoutes');
+const calificacionRoutes = require('./routes/calificacionRoutes');
 
 const app = express();
 
-// Middleware para analizar el cuerpo de las solicitudes JSON
+app.use(cors());
 app.use(bodyParser.json());
 
-// Middleware para rutas de alumnos y usuarios
 app.use('/api/alumnos', alumnoRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/calificaciones', calificacionRoutes);
 
-// Middleware para servir archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, '../rocklegendsSchoolFront')));
 
-// Ruta para manejar todas las demás solicitudes y servir el archivo index.html del frontend
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../rocklegendsSchoolFront', 'index.html'));
 });
