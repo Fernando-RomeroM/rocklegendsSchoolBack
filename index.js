@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
@@ -14,14 +13,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/alumnos', alumnoRoutes);
-app.use('/api/user', userRoutes);  // Verifica que esta ruta sea correcta
-app.use('/api/calificaciones', calificacionRoutes);  // Verifica que esta ruta sea correcta
-
-app.use(express.static(path.join(__dirname, '../rocklegendsSchoolFront')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../rocklegendsSchoolFront', 'index.html'));
-});
+app.use('/api/users', userRoutes);  // Verifica que la ruta esté configurada correctamente
+app.use('/api/calificaciones', calificacionRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

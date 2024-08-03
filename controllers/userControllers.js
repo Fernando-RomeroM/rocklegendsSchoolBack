@@ -7,7 +7,7 @@ exports.getUser = async (req, res) => {
         const { id } = req.params;
         const result = await client.query('SELECT * FROM users WHERE id = $1', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'No queremos Posers en nuestra escuela' });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
         let user = result.rows[0];
         delete user.password;
@@ -22,12 +22,12 @@ exports.loginUser = async (req, res) => {
         const { username, password } = req.body;
         const result = await client.query('SELECT * FROM users WHERE username = $1', [username]);
         if (result.rows.length === 0) {
-            return res.status(400).json({ error: 'No queremos Posers en nuestra escuela' });
+            return res.status(400).json({ error: 'Usuario no encontrado' });
         }
         const user = result.rows[0];
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(400).json({ error: 'No queremos Posers en nuestra escuela' });
+            return res.status(400).json({ error: 'Contraseña incorrecta' });
         }
         const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token, userId: user.id });
