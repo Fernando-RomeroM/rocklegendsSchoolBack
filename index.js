@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/alumnos', alumnoRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);  // Verifica que esta ruta sea /api/users
 app.use('/api/calificaciones', calificacionRoutes);
 
 const PORT = process.env.PORT || 5000;
