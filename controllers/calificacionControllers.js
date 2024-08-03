@@ -1,12 +1,11 @@
 const client = require('../db');
 
-// Controlador para agregar una calificación
 exports.addCalificacion = async (req, res) => {
     try {
-        const { alumno_id, user_id, calificacion } = req.body;
+        const { alumno_id, user_id, estado } = req.body;
         const result = await client.query(
-            'INSERT INTO calificaciones (alumno_id, user_id, calificacion) VALUES ($1, $2, $3) RETURNING *',
-            [alumno_id, user_id, calificacion]
+            'INSERT INTO calificaciones (alumno_id, user_id, estado) VALUES ($1, $2, $3) RETURNING *',
+            [alumno_id, user_id, estado]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -14,11 +13,17 @@ exports.addCalificacion = async (req, res) => {
     }
 };
 
-// Controlador para obtener todas las calificaciones (opcional)
-exports.getCalificaciones = async (req, res) => {
+exports.getCalificacionByAlumnoId = async (req, res) => {
     try {
-        const result = await client.query('SELECT * FROM calificaciones');
-        res.json(result.rows);
+        const { alumnoId } = req.params;
+        const result = await client.query(
+            'SELECT estado FROM calificaciones WHERE alumno_id = $1 ORDER BY fecha DESC LIMIT 1',
+            [alumnoId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ estado: 'Sin calificación' });
+        }
+        res.json(result.rows[0]);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
