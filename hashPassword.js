@@ -13,10 +13,7 @@ const client = new Client({
 
 client.connect(err => {
     if (err) {
-        console.error('Connection error', err.stack);
     } else {
-        console.log('Connected to database');
-
         const users = [
             { username: 'LaBrie', password: 'cantante' },
             { username: 'Petrucci', password: 'guitarrista' },
@@ -28,20 +25,19 @@ client.connect(err => {
                 if (err) {
                     console.error('Error hasheando la contraseña:', err);
                 } else {
-                    console.log(`Contraseña hasheada para ${user.username}:`, hash);
+                    
                     // Aquí actualizamos la contraseña en la base de datos
                     client.query('UPDATE users SET password = $1 WHERE username = $2', [hash, user.username], (err, res) => {
                         if (err) {
                             console.error(`Error actualizando la contraseña para ${user.username}`, err.stack);
                         } else {
-                            console.log(`Contraseña actualizada para el usuario ${user.username}`);
+                            
                         }
                     });
                 }
             });
         });
 
-        // Cerrar la conexión después de un retraso para asegurarse de que todas las consultas se completen
         setTimeout(() => client.end(), 5000);
     }
 });
