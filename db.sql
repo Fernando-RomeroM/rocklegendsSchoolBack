@@ -15,11 +15,14 @@ CREATE TABLE users (
 );
 
 -- Aquí va la tabla de las calificaciones
-CREATE TABLE calificaciones (
+CREATE TABLE IF NOT EXISTS calificaciones (
     id SERIAL PRIMARY KEY,
-    alumno_id INT REFERENCES alumnos(id),
-    user_id INT REFERENCES users(id),
+    alumno_id INT REFERENCES alumnos(id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
     estado VARCHAR(10) NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (alumno_id)
 );
+
+
 
